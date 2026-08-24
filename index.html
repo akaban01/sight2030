@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>sight2030</title>
-<meta name="description" content="A small workshop of free, focused, privacy-respecting web tools and sites — Faiz Editor, Exercise, PDF Forms, Todo, Image Converter, QR Studio, Stock Scanner, Skylight, NAMCC and Azkar." />
+<meta name="description" content="A small workshop of free, focused, privacy-respecting web tools and sites — Faizan CMS, Exercise, PDF Forms, Todo, Image Converter, QR Studio, Stock Scanner, Skylight, NAMCC and Azkar." />
 <meta name="color-scheme" content="dark light" />
 <meta name="theme-color" content="#0b0b12" />
 
@@ -266,6 +266,32 @@
   @media (prefers-reduced-motion: reduce) {
     .card, .glow, .card .url svg { transition: none; }
   }
+
+  .fallback-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+  }
+  .fallback-list a { color: var(--fg); font-weight: 600; }
+
+  .grid-note {
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .status[data-status="beta"] .dot {
+    background: #fbbf24;
+    box-shadow: 0 0 0 3px color-mix(in srgb, #fbbf24 25%, transparent);
+  }
+  .status[data-status="soon"] .dot {
+    background: var(--muted);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--muted) 25%, transparent);
+  }
+
 </style>
 </head>
 <body>
@@ -283,149 +309,24 @@
     <section aria-labelledby="apps-label">
       <p class="section-label" id="apps-label">Apps</p>
 
-      <div class="grid">
+      <div class="grid" id="grid" aria-busy="true"></div>
 
-        <a class="card" style="--accent:#e879f9" href="https://editor.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9h17"/><path d="M9.5 9v11"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Faiz Editor</h2>
-          <p>A self-hosted visual page builder built on the open-source Puck engine, with a 36-component block library, HTML export, and image uploads to Cloudflare R2.</p>
-          <span class="url">editor.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
+      <p class="grid-note" id="grid-note" hidden></p>
 
-        <a class="card" style="--accent:#fbbf24" href="https://exercise.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Exercise</h2>
-          <p>A checkable weekly workout plan with set timers, progression tracking, and an offline-first design.</p>
-          <span class="url">exercise.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#60a5fa" href="https://pdf-forms.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l3.5 3.5V20a.5.5 0 0 1-.5.5H7a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5Z"/><path d="M14 3.5V7h3.5"/><path d="M9 13h6M9 16h4"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>PDF Forms</h2>
-          <p>Drag-and-drop builder for real, fillable PDF forms. Runs entirely in the browser — nothing is uploaded.</p>
-          <span class="url">pdf-forms.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#f472b6" href="https://todo.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5 11 15l5-5.5"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Todo</h2>
-          <p>A todo list that feels like a supportive friend, not another nagging task manager. Streaks, not shame.</p>
-          <span class="url">todo.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#a78bfa" href="https://img-proc.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 3.5 3.5L17 11l3 3"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Image Converter</h2>
-          <p>Convert images to WebP, AVIF, JPEG or PNG, resize them, and hit a target file size — runs entirely in your browser.</p>
-          <span class="url">img-proc.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#22d3ee" href="https://qr.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="2.6" height="2.6"/><rect x="17.4" y="14" width="2.6" height="2.6"/><rect x="14" y="17.4" width="2.6" height="2.6"/><rect x="17.4" y="17.4" width="2.6" height="2.6"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Prism QR Studio</h2>
-          <p>A free, frontend-only QR code generator with gradients, custom shapes, logos and instant export.</p>
-          <span class="url">qr.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#fb923c" href="https://stocks.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M12 2v20M19 6v12"/><rect x="3.3" y="9" width="3.4" height="6" rx="0.6"/><rect x="10.3" y="6" width="3.4" height="9" rx="0.6"/><rect x="17.3" y="8" width="3.4" height="7" rx="0.6"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Stock Scanner</h2>
-          <p>A volatility-squeeze scanner over a halal, Shariah-screened watchlist, flagging short-term breakout setups both ways.</p>
-          <span class="url">stocks.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#818cf8" href="https://skylight.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/><path d="M8.5 14.5l2 2 4.5-5"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Skylight</h2>
-          <p>A calendar-and-routines dashboard for a wall tablet — per-kid task checklists with confetti, plus a touch-friendly calendar view.</p>
-          <span class="url">skylight.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#2dd4bf" href="https://namcc.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9.5L12 4l8 5.5V20"/><path d="M9 20v-6h6v6"/><path d="M4 20h16"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>NAMCC</h2>
-          <p>The website for North Austin Muslim Community Center (Masjid Aisha).</p>
-          <span class="url">namcc.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-        <a class="card" style="--accent:#34d399" href="https://zikr.sight2030.com/" target="_blank" rel="noopener">
-          <div class="card-top">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="5" cy="17" r="2"/><circle cx="19" cy="17" r="2"/><path d="M8.5 8.8 10 11M15.5 8.8 14 11M8.5 15.2 10 13M15.5 15.2 14 13"/></svg>
-            </span>
-            <span class="status"><span class="dot" aria-hidden="true"></span>live</span>
-          </div>
-          <h2>Azkar</h2>
-          <p>Offline audio player for daily adhkar, with a built-in tasbih counter and background, lock-screen playback.</p>
-          <span class="url">zikr.sight2030.com
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </span>
-        </a>
-
-      </div>
+      <noscript>
+        <ul class="fallback-list">
+          <li><a href="https://editor.sight2030.com/">Faizan CMS</a> — editor.sight2030.com</li>
+          <li><a href="https://exercise.sight2030.com/">Exercise</a> — exercise.sight2030.com</li>
+          <li><a href="https://pdf-forms.sight2030.com/">PDF Forms</a> — pdf-forms.sight2030.com</li>
+          <li><a href="https://todo.sight2030.com/">Todo</a> — todo.sight2030.com</li>
+          <li><a href="https://img-proc.sight2030.com/">Image Converter</a> — img-proc.sight2030.com</li>
+          <li><a href="https://qr.sight2030.com/">Prism QR Studio</a> — qr.sight2030.com</li>
+          <li><a href="https://stocks.sight2030.com/">Stock Scanner</a> — stocks.sight2030.com</li>
+          <li><a href="https://skylight.sight2030.com/">Skylight</a> — skylight.sight2030.com</li>
+          <li><a href="https://namcc.sight2030.com/">NAMCC</a> — namcc.sight2030.com</li>
+          <li><a href="https://zikr.sight2030.com/">Azkar</a> — zikr.sight2030.com</li>
+        </ul>
+      </noscript>
     </section>
 
     <footer>
@@ -436,6 +337,127 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Cards are rendered from data/apps.json so the list can be edited in
+    // Pages CMS (https://app.pagescms.org) without touching this file.
+    var ICONS = {
+      beads: '<circle cx="12" cy="12" r="3"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="5" cy="17" r="2"/><circle cx="19" cy="17" r="2"/><path d="M8.5 8.8 10 11M15.5 8.8 14 11M8.5 15.2 10 13M15.5 15.2 14 13"/>',
+      dumbbell: '<path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/>',
+      document: '<path d="M7 3.5h7l3.5 3.5V20a.5.5 0 0 1-.5.5H7a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5Z"/><path d="M14 3.5V7h3.5"/><path d="M9 13h6M9 16h4"/>',
+      checklist: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5 11 15l5-5.5"/>',
+      image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 3.5 3.5L17 11l3 3"/>',
+      qr: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="2.6" height="2.6"/><rect x="17.4" y="14" width="2.6" height="2.6"/><rect x="14" y="17.4" width="2.6" height="2.6"/><rect x="17.4" y="17.4" width="2.6" height="2.6"/>',
+      chart: '<path d="M5 4v16M12 2v20M19 6v12"/><rect x="3.3" y="9" width="3.4" height="6" rx="0.6"/><rect x="10.3" y="6" width="3.4" height="9" rx="0.6"/><rect x="17.3" y="8" width="3.4" height="7" rx="0.6"/>',
+      calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/><path d="M8.5 14.5l2 2 4.5-5"/>',
+      home: '<path d="M4 20V9.5L12 4l8 5.5V20"/><path d="M9 20v-6h6v6"/><path d="M4 20h16"/>',
+      layout: '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9h17"/><path d="M9.5 9v11"/>',
+      globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.4 3.4 5.4 3.4 8.5s-1.2 6.1-3.4 8.5c-2.2-2.4-3.4-5.4-3.4-8.5s1.2-6.1 3.4-8.5Z"/>',
+      book: '<path d="M5 4h6.5A2.5 2.5 0 0 1 14 6.5V20a2 2 0 0 0-2-2H5Z"/><path d="M19 4h-2.5A2.5 2.5 0 0 0 14 6.5V20a2 2 0 0 1 2-2h3Z"/>',
+      clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+      chat: '<path d="M20 15a2.5 2.5 0 0 1-2.5 2.5H9L4.5 21V6.5A2.5 2.5 0 0 1 7 4h10.5A2.5 2.5 0 0 1 20 6.5Z"/>',
+      folder: '<path d="M3.5 7.5a2 2 0 0 1 2-2h3.4l2 2.5h7.6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2Z"/>',
+      sparkle: '<path d="M12 3.5 13.9 9 19.5 11 13.9 13 12 18.5 10.1 13 4.5 11 10.1 9Z"/>'
+    };
+
+    var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+
+    var STATUS_LABELS = { live: 'live', beta: 'beta', soon: 'coming soon' };
+
+    function displayUrl(url) {
+      try {
+        var u = new URL(url);
+        return (u.host + u.pathname).replace(/\/$/, '');
+      } catch (e) {
+        return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      }
+    }
+
+    function iconSvg(name) {
+      var body = ICONS[name] || ICONS.globe;
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
+    }
+
+    function buildCard(app) {
+      var card = document.createElement('a');
+      card.className = 'card';
+      card.href = app.url;
+      card.target = '_blank';
+      card.rel = 'noopener';
+      if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(app.accent || '')) {
+        card.style.setProperty('--accent', app.accent);
+      }
+
+      var top = document.createElement('div');
+      top.className = 'card-top';
+
+      var icon = document.createElement('span');
+      icon.className = 'icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.innerHTML = iconSvg(app.icon);
+
+      var status = document.createElement('span');
+      var key = STATUS_LABELS[app.status] ? app.status : 'live';
+      status.className = 'status';
+      status.setAttribute('data-status', key);
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.setAttribute('aria-hidden', 'true');
+      status.appendChild(dot);
+      status.appendChild(document.createTextNode(STATUS_LABELS[key]));
+
+      top.appendChild(icon);
+      top.appendChild(status);
+
+      var title = document.createElement('h2');
+      title.textContent = app.name;
+
+      var desc = document.createElement('p');
+      desc.textContent = app.description || '';
+
+      var url = document.createElement('span');
+      url.className = 'url';
+      url.appendChild(document.createTextNode(displayUrl(app.url)));
+      url.insertAdjacentHTML('beforeend', ARROW);
+
+      card.appendChild(top);
+      card.appendChild(title);
+      card.appendChild(desc);
+      card.appendChild(url);
+      return card;
+    }
+
+    (function renderApps() {
+      var grid = document.getElementById('grid');
+      var note = document.getElementById('grid-note');
+
+      function fail(message) {
+        grid.removeAttribute('aria-busy');
+        note.textContent = message;
+        note.hidden = false;
+      }
+
+      fetch('data/apps.json', { cache: 'no-cache' })
+        .then(function (res) {
+          if (!res.ok) { throw new Error('HTTP ' + res.status); }
+          return res.json();
+        })
+        .then(function (apps) {
+          if (!Array.isArray(apps)) { throw new Error('apps.json must be an array'); }
+          var visible = apps.filter(function (app) {
+            return app && app.name && app.url && !app.hidden;
+          });
+          var frag = document.createDocumentFragment();
+          visible.forEach(function (app) { frag.appendChild(buildCard(app)); });
+          grid.appendChild(frag);
+          grid.removeAttribute('aria-busy');
+          if (!visible.length) { fail('No apps are listed yet.'); }
+        })
+        .catch(function (err) {
+          console.error('Could not load data/apps.json:', err);
+          fail('The app list could not be loaded. Please try again later.');
+        });
+    })();
 
     var root = document.documentElement;
     window.addEventListener('pointermove', function (e) {

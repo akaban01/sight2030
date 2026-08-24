@@ -1,0 +1,107 @@
+# Pages CMS configuration — https://pagescms.org
+# Open the repo at https://app.pagescms.org to edit the app list in a UI.
+
+content:
+  - name: apps
+    label: Apps
+    type: file
+    path: data/apps.json
+    format: json
+    list:
+      min: 1
+      collapsible:
+        collapsed: true
+        summary: "{fields.name}"
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+        description: The card heading, e.g. "Prism QR Studio".
+
+      - name: url
+        label: URL
+        type: string
+        required: true
+        description: Full link including https://. The card shows the domain part.
+        pattern:
+          regex: "^https?://.+"
+          message: Must start with http:// or https://
+
+      - name: description
+        label: Description
+        type: text
+        required: true
+        description: One or two sentences shown under the heading.
+
+      - name: accent
+        label: Accent colour
+        type: string
+        required: true
+        default: "#a78bfa"
+        description: Hex colour used for the icon, glow and hover border.
+        pattern:
+          regex: "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+          message: Use a hex colour such as #a78bfa
+
+      - name: icon
+        label: Icon
+        type: select
+        required: true
+        default: globe
+        description: Pick one of the built-in icons. Anything unrecognised falls back to the globe.
+        options:
+          values:
+            - name: beads
+              label: Beads (tasbih)
+            - name: dumbbell
+              label: Dumbbell
+            - name: document
+              label: Document
+            - name: checklist
+              label: Checklist
+            - name: image
+              label: Image
+            - name: qr
+              label: QR code
+            - name: chart
+              label: Bar chart
+            - name: calendar
+              label: Calendar
+            - name: home
+              label: Home
+            - name: layout
+              label: Layout
+            - name: globe
+              label: Globe
+            - name: book
+              label: Book
+            - name: clock
+              label: Clock
+            - name: chat
+              label: Chat
+            - name: folder
+              label: Folder
+            - name: sparkle
+              label: Sparkle
+
+      - name: status
+        label: Status
+        type: select
+        required: true
+        default: live
+        description: Shown as the small dot and label in the card corner.
+        options:
+          values:
+            - name: live
+              label: live
+            - name: beta
+              label: beta
+            - name: soon
+              label: coming soon
+
+      - name: hidden
+        label: Hide this app
+        type: boolean
+        default: false
+        description: Keep the entry but leave it off the homepage.

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Faizan CMS",
+    "url": "https://editor.sight2030.com/",
+    "description": "The fastest CMS ever made — go from blank page to a live website in under a minute. Drag-and-drop editing on the open-source Puck engine, a 36-component block library, instant HTML export.",
+    "accent": "#e879f9",
+    "icon": "layout",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Exercise",
+    "url": "https://exercise.sight2030.com/",
+    "description": "A checkable weekly workout plan with set timers, progression tracking, and an offline-first design.",
+    "accent": "#fbbf24",
+    "icon": "dumbbell",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "PDF Forms",
+    "url": "https://pdf-forms.sight2030.com/",
+    "description": "Drag-and-drop builder for real, fillable PDF forms. Runs entirely in the browser — nothing is uploaded.",
+    "accent": "#60a5fa",
+    "icon": "document",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Todo",
+    "url": "https://todo.sight2030.com/",
+    "description": "A todo list that feels like a supportive friend, not another nagging task manager. Streaks, not shame.",
+    "accent": "#f472b6",
+    "icon": "checklist",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Image Converter",
+    "url": "https://img-proc.sight2030.com/",
+    "description": "Convert images to WebP, AVIF, JPEG or PNG, resize them, and hit a target file size — runs entirely in your browser.",
+    "accent": "#a78bfa",
+    "icon": "image",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Prism QR Studio",
+    "url": "https://qr.sight2030.com/",
+    "description": "A free, frontend-only QR code generator with gradients, custom shapes, logos and instant export.",
+    "accent": "#22d3ee",
+    "icon": "qr",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Stock Scanner",
+    "url": "https://stocks.sight2030.com/",
+    "description": "A volatility-squeeze scanner over a halal, Shariah-screened watchlist, flagging short-term breakout setups both ways.",
+    "accent": "#fb923c",
+    "icon": "chart",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Skylight",
+    "url": "https://skylight.sight2030.com/",
+    "description": "A calendar-and-routines dashboard for a wall tablet — per-kid task checklists with confetti, plus a touch-friendly calendar view.",
+    "accent": "#818cf8",
+    "icon": "calendar",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "NAMCC",
+    "url": "https://namcc.sight2030.com/",
+    "description": "The website for North Austin Muslim Community Center (Masjid Aisha).",
+    "accent": "#2dd4bf",
+    "icon": "home",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Azkar",
+    "url": "https://zikr.sight2030.com/",
+    "description": "Offline audio player for daily adhkar, with a built-in tasbih counter and background, lock-screen playback.",
+    "accent": "#34d399",
+    "icon": "beads",
+    "status": "live",
+    "hidden": false
+  }
+]

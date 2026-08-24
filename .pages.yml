@@ -7,11 +7,7 @@ content:
     type: file
     path: data/apps.json
     format: json
-    list:
-      min: 1
-      collapsible:
-        collapsed: true
-        summary: "{fields.name}"
+    list: true
     fields:
       - name: name
         label: Name

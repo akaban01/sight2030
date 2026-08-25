@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>sight2030</title>
-<meta name="description" content="A small workshop of free, focused, privacy-respecting web tools and sites — Faizan CMS, Exercise, PDF Forms, Todo, Image Converter, QR Studio, Stock Scanner, Skylight, NAMCC and Azkar." />
+<meta name="description" content="A small workshop of free, focused, privacy-respecting web tools and sites — Faizan CMS, Exercise, PDF Forms, Todo, Image Converter, Friday Countdown, QR Studio, Docs to HTML, PDF Form Extractor, Stock Scanner, Skylight, NAMCC and Azkar." />
 <meta name="color-scheme" content="dark light" />
 <meta name="theme-color" content="#0b0b12" />
 
@@ -137,6 +137,39 @@
     flex: 1;
     height: 1px;
     background: linear-gradient(90deg, var(--card-border), transparent);
+  }
+
+  .search-wrap {
+    position: relative;
+    margin-bottom: 1.4rem;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  #search {
+    width: 100%;
+    padding: 0.75rem 0.9rem 0.75rem 2.5rem;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--fg);
+    font: inherit;
+    font-size: 0.92rem;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #search::placeholder { color: var(--muted); }
+  #search::-webkit-search-cancel-button { -webkit-appearance: none; }
+  #search:focus {
+    outline: 2px solid color-mix(in srgb, var(--ring) 55%, transparent);
+    outline-offset: 2px;
   }
 
   .grid {
@@ -309,6 +342,11 @@
     <section aria-labelledby="apps-label">
       <p class="section-label" id="apps-label">Apps</p>
 
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="search" placeholder="Search apps…" aria-label="Search apps" autocomplete="off" />
+      </div>
+
       <div class="grid" id="grid" aria-busy="true"></div>
 
       <p class="grid-note" id="grid-note" hidden></p>
@@ -320,7 +358,10 @@
           <li><a href="https://pdf-forms.sight2030.com/">PDF Forms</a> — pdf-forms.sight2030.com</li>
           <li><a href="https://todo.sight2030.com/">Todo</a> — todo.sight2030.com</li>
           <li><a href="https://img-proc.sight2030.com/">Image Converter</a> — img-proc.sight2030.com</li>
+          <li><a href="https://akaban01.github.io/friday-count-down/">Friday Countdown</a> — akaban01.github.io/friday-count-down</li>
           <li><a href="https://qr.sight2030.com/">Prism QR Studio</a> — qr.sight2030.com</li>
+          <li><a href="https://sight2030.com/apps/docs-to-html/">Docs to HTML</a> — sight2030.com/apps/docs-to-html</li>
+          <li><a href="https://sight2030.com/apps/pdf-form-extractor/">PDF Form Extractor</a> — sight2030.com/apps/pdf-form-extractor</li>
           <li><a href="https://stocks.sight2030.com/">Stock Scanner</a> — stocks.sight2030.com</li>
           <li><a href="https://skylight.sight2030.com/">Skylight</a> — skylight.sight2030.com</li>
           <li><a href="https://namcc.sight2030.com/">NAMCC</a> — namcc.sight2030.com</li>
@@ -430,12 +471,38 @@
     (function renderApps() {
       var grid = document.getElementById('grid');
       var note = document.getElementById('grid-note');
+      var search = document.getElementById('search');
+      var allApps = [];
 
       function fail(message) {
         grid.removeAttribute('aria-busy');
         note.textContent = message;
         note.hidden = false;
       }
+
+      function renderGrid(apps) {
+        grid.innerHTML = '';
+        var frag = document.createDocumentFragment();
+        apps.forEach(function (app) { frag.appendChild(buildCard(app)); });
+        grid.appendChild(frag);
+      }
+
+      function applySearch() {
+        var q = search.value.trim().toLowerCase();
+        var filtered = !q ? allApps : allApps.filter(function (app) {
+          var hay = (app.name + ' ' + (app.description || '')).toLowerCase();
+          return hay.indexOf(q) !== -1;
+        });
+        renderGrid(filtered);
+        if (!filtered.length) {
+          note.textContent = 'No apps match "' + search.value.trim() + '".';
+          note.hidden = false;
+        } else {
+          note.hidden = true;
+        }
+      }
+
+      search.addEventListener('input', applySearch);
 
       fetch('data/apps.json', { cache: 'no-cache' })
         .then(function (res) {
@@ -444,14 +511,12 @@
         })
         .then(function (apps) {
           if (!Array.isArray(apps)) { throw new Error('apps.json must be an array'); }
-          var visible = apps.filter(function (app) {
+          allApps = apps.filter(function (app) {
             return app && app.name && app.url && !app.hidden;
           });
-          var frag = document.createDocumentFragment();
-          visible.forEach(function (app) { frag.appendChild(buildCard(app)); });
-          grid.appendChild(frag);
+          renderGrid(allApps);
           grid.removeAttribute('aria-busy');
-          if (!visible.length) { fail('No apps are listed yet.'); }
+          if (!allApps.length) { fail('No apps are listed yet.'); }
         })
         .catch(function (err) {
           console.error('Could not load data/apps.json:', err);

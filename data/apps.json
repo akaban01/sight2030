@@ -45,11 +45,47 @@
     "hidden": false
   },
   {
+    "name": "Friday Countdown",
+    "url": "https://akaban01.github.io/friday-count-down/",
+    "description": "How long until Friday at 5pm? A little joy for the working week, with confetti when you get there.",
+    "accent": "#ff4d8f",
+    "icon": "clock",
+    "status": "live",
+    "hidden": false
+  },
+  {
     "name": "Prism QR Studio",
     "url": "https://qr.sight2030.com/",
     "description": "A free, frontend-only QR code generator with gradients, custom shapes, logos and instant export.",
     "accent": "#22d3ee",
     "icon": "qr",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Docs to HTML",
+    "url": "https://sight2030.com/apps/docs-to-html/",
+    "description": "Paste from Word, Google Docs or Notion — or write Markdown — and get clean, portable HTML back. Runs entirely in your browser.",
+    "accent": "#f43f5e",
+    "icon": "book",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "PDF Form Extractor",
+    "url": "https://sight2030.com/apps/pdf-form-extractor/",
+    "description": "Upload a filled PDF form and pull every field's value out as JSON, CSV or an HTML table — nothing is uploaded.",
+    "accent": "#60a5fa",
+    "icon": "document",
+    "status": "live",
+    "hidden": false
+  },
+  {
+    "name": "Trusted Contacts",
+    "url": "https://sight2030.com/apps/trusted-contacts/",
+    "description": "A searchable directory of trusted local handymen, contractors and service providers — categorized, click-to-call.",
+    "accent": "#84cc16",
+    "icon": "folder",
     "status": "live",
     "hidden": false
   },

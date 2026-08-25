@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Docs to HTML — sight2030</title>
+<meta name="description" content="Paste from Word, Google Docs or Notion — or write Markdown — and get clean, portable HTML. Runs entirely in your browser, nothing is uploaded." />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0b0b12" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b0b12'/%3E%3Cpath d='M16 14h14a6 6 0 0 1 6 6v30a5 5 0 0 0-5-5H16Z' fill='%23f43f5e'/%3E%3Cpath d='M48 14h-14a6 6 0 0 0-6 6v30a5 5 0 0 1 5-5h15Z' fill='%23fb7185'/%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    --bg: #0a0a10;
+    --fg: #f2f2f6;
+    --muted: #9a9aac;
+    --card: #14141f;
+    --card-2: #191924;
+    --border: #232334;
+    --accent: #f43f5e;
+    --accent-2: #fb7185;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7fb;
+      --fg: #14141c;
+      --muted: #5b5b6d;
+      --card: #ffffff;
+      --card-2: #f3f3f9;
+      --border: #e4e4ee;
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+
+  body {
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:
+      radial-gradient(50rem 34rem at 100% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%),
+      var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4rem) 1.5rem 4rem;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 1.75rem;
+  }
+  .back:hover { color: var(--fg); }
+  .back svg { width: 14px; height: 14px; }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 8px 30px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .mark svg { width: 22px; height: 22px; stroke: white; }
+
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    letter-spacing: -0.02em;
+    margin: 0.15rem 0 0.4rem;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    max-width: 52ch;
+  }
+
+  .tabs {
+    display: inline-flex;
+    padding: 0.25rem;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 9px;
+    cursor: pointer;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .zone {
+    min-height: 220px;
+    max-height: 420px;
+    overflow: auto;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .zone:focus { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+  .zone[data-empty="true"]::before {
+    content: attr(data-placeholder);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .zone img { max-width: 100%; }
+  .zone table { border-collapse: collapse; }
+  .zone td, .zone th { border: 1px solid var(--border); padding: 0.3rem 0.5rem; }
+
+  textarea#mdInput {
+    width: 100%;
+    min-height: 220px;
+    max-height: 420px;
+    resize: vertical;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  textarea#mdInput:focus { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0.9rem 0 1.75rem;
+  }
+
+  .opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .opts label { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+  .opts input { accent-color: var(--accent); }
+
+  .filebtn {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: 9px;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .filebtn:hover { color: var(--fg); border-color: var(--muted); }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.75rem;
+  }
+
+  .output-tabs { display: inline-flex; gap: 0.35rem; }
+  .otab {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--card-2);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.3rem 0.65rem;
+    border-radius: 7px;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .otab[aria-selected="true"] { background: var(--card); color: var(--fg); }
+
+  pre#code {
+    margin: 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    max-height: 420px;
+    overflow: auto;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  iframe#preview {
+    width: 100%;
+    height: 420px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  button.btn {
+    appearance: none;
+    border: none;
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.65rem 1.1rem;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { background: var(--card-2); color: var(--fg); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--muted); }
+
+  .status {
+    font-size: 0.82rem;
+    color: var(--accent-2);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .status.show { opacity: 1; }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+  <main>
+    <a class="back" href="https://sight2030.com/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      sight2030
+    </a>
+
+    <header>
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h6.5A2.5 2.5 0 0 1 14 6.5V20a2 2 0 0 0-2-2H5Z"/><path d="M19 4h-2.5A2.5 2.5 0 0 0 14 6.5V20a2 2 0 0 1 2-2h3Z"/></svg>
+      </span>
+      <div>
+        <h1>Docs → HTML</h1>
+        <p>Paste content copied from Word, Google Docs or Notion, or write Markdown — get clean, portable HTML back. Nothing leaves your browser.</p>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Input mode">
+      <button class="tab" id="tabPaste" role="tab" aria-selected="true">Paste</button>
+      <button class="tab" id="tabMd" role="tab" aria-selected="false">Markdown</button>
+    </div>
+
+    <section class="panel active" id="panelPaste">
+      <div class="zone" id="pasteZone" contenteditable="true" data-empty="true"
+        data-placeholder="Paste here (Ctrl/Cmd+V) — copy some text from Word, Google Docs, Notion, or a webpage first."></div>
+      <div class="row">
+        <div class="opts">
+          <label><input type="checkbox" id="stripStyles" /> Strip inline styles</label>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button class="filebtn" id="fileBtnPaste">Or upload a .docx / .html file…</button>
+          <button class="filebtn" id="clearPaste">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panelMd">
+      <textarea id="mdInput" spellcheck="false" placeholder="# Heading&#10;&#10;Write **Markdown** here, or *drop* a .md / .txt file below."></textarea>
+      <div class="row">
+        <div class="opts"></div>
+        <button class="filebtn" id="fileBtnMd">Or choose a .md / .txt file…</button>
+      </div>
+    </section>
+
+    <input type="file" id="fileInput" accept=".html,.htm,.md,.markdown,.txt,.docx" hidden />
+
+    <section>
+      <div class="section-label">
+        <span>Output</span>
+        <div class="output-tabs">
+          <button class="otab" id="otabCode" aria-selected="true">Code</button>
+          <button class="otab" id="otabPreview" aria-selected="false">Preview</button>
+        </div>
+      </div>
+
+      <pre id="code"><code id="codeText"></code></pre>
+      <iframe id="preview" title="Preview" hidden></iframe>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="copyBtn">Copy HTML</button>
+        <button class="btn btn-ghost" id="downloadBtn">Download .html</button>
+        <label class="opts" style="margin-left: 0.25rem;"><input type="checkbox" id="fullDoc" /> Full document on download</label>
+        <span class="status" id="status">Copied</span>
+      </div>
+    </section>
+
+    <footer>
+      Part of the <a href="https://sight2030.com/">sight2030</a> workshop.
+    </footer>
+  </main>
+
+  <script src="vendor/mammoth.browser.min.js"></script>
+  <script>
+    var pasteZone = document.getElementById('pasteZone');
+    var mdInput = document.getElementById('mdInput');
+    var codeText = document.getElementById('codeText');
+    var codeBlock = document.getElementById('code');
+    var preview = document.getElementById('preview');
+    var stripStyles = document.getElementById('stripStyles');
+    var fullDoc = document.getElementById('fullDoc');
+    var status = document.getElementById('status');
+
+    var mode = 'paste'; // 'paste' | 'md'
+    var outputView = 'code'; // 'code' | 'preview'
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ---------- Markdown -> HTML (compact) ----------
+    function markdownToHtml(md) {
+      var lines = md.replace(/\r\n?/g, '\n').split('\n');
+      var out = [];
+      var inCode = false, codeLines = [], codeLang = '';
+      var listStack = [];
+
+      function closeLists() {
+        while (listStack.length) out.push('</' + listStack.pop() + '>');
+      }
+
+      function inline(text) {
+        text = escapeHtml(text);
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+        text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+        text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+        text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        return text;
+      }
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var fence = line.match(/^```\s*(\S*)\s*$/);
+        if (fence) {
+          if (!inCode) { inCode = true; codeLines = []; codeLang = fence[1] || ''; }
+          else {
+            inCode = false;
+            var cls = codeLang ? ' class="language-' + codeLang + '"' : '';
+            out.push('<pre><code' + cls + '>' + escapeHtml(codeLines.join('\n')) + '</code></pre>');
+          }
+          continue;
+        }
+        if (inCode) { codeLines.push(line); continue; }
+
+        if (/^\s*$/.test(line)) { closeLists(); continue; }
+
+        var h = line.match(/^(#{1,6})\s+(.*)$/);
+        if (h) { closeLists(); out.push('<h' + h[1].length + '>' + inline(h[2].trim()) + '</h' + h[1].length + '>'); continue; }
+
+        if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { closeLists(); out.push('<hr>'); continue; }
+
+        var bq = line.match(/^>\s?(.*)$/);
+        if (bq) { closeLists(); out.push('<blockquote>' + inline(bq[1]) + '</blockquote>'); continue; }
+
+        var ul = line.match(/^\s*[-*+]\s+(.*)$/);
+        var ol = line.match(/^\s*\d+\.\s+(.*)$/);
+        if (ul) {
+          if (listStack[listStack.length - 1] !== 'ul') { closeLists(); out.push('<ul>'); listStack.push('ul'); }
+          out.push('<li>' + inline(ul[1]) + '</li>');
+          continue;
+        }
+        if (ol) {
+          if (listStack[listStack.length - 1] !== 'ol') { closeLists(); out.push('<ol>'); listStack.push('ol'); }
+          out.push('<li>' + inline(ol[1]) + '</li>');
+          continue;
+        }
+
+        closeLists();
+        out.push('<p>' + inline(line.trim()) + '</p>');
+      }
+      closeLists();
+      return out.join('\n');
+    }
+
+    // ---------- Rich paste -> clean HTML ----------
+    function cleanHtml(rawHtml, opts) {
+      var container = document.createElement('div');
+      container.innerHTML = rawHtml;
+
+      (function stripComments(node) {
+        for (var i = node.childNodes.length - 1; i >= 0; i--) {
+          var child = node.childNodes[i];
+          if (child.nodeType === 8) node.removeChild(child);
+          else if (child.nodeType === 1) stripComments(child);
+        }
+      })(container);
+
+      container.querySelectorAll('style, script, meta, link, xml').forEach(function (el) { el.remove(); });
+
+      // Word/Office markup emits namespaced tags like <o:p>, <w:sdt>, <v:shape> —
+      // never valid HTML, safe to drop outright.
+      Array.prototype.slice.call(container.querySelectorAll('*')).forEach(function (el) {
+        if (el.tagName.indexOf(':') !== -1) el.remove();
+      });
+
+      container.querySelectorAll('*').forEach(function (el) {
+        ['class', 'id', 'lang', 'align', 'valign'].forEach(function (a) { el.removeAttribute(a); });
+        for (var i = el.attributes.length - 1; i >= 0; i--) {
+          var attr = el.attributes[i];
+          if (/^(o|v|w|m):/i.test(attr.name) || /^xmlns/i.test(attr.name)) el.removeAttribute(attr.name);
+        }
+        if (el.hasAttribute('style')) {
+          if (opts.stripStyles) {
+            el.removeAttribute('style');
+          } else {
+            var cleaned = el.getAttribute('style').split(';')
+              .filter(function (d) { return d.trim() && !/^\s*mso-/i.test(d); })
+              .join(';');
+            if (cleaned.trim()) el.setAttribute('style', cleaned.trim()); else el.removeAttribute('style');
+          }
+        }
+      });
+
+      var changed = true;
+      while (changed) {
+        changed = false;
+        container.querySelectorAll('span, font').forEach(function (el) {
+          if (!el.attributes.length) {
+            while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+            el.parentNode.removeChild(el);
+            changed = true;
+          }
+        });
+      }
+
+      container.querySelectorAll('p, div').forEach(function (el) {
+        if (!el.textContent.trim() && !el.querySelector('img')) el.remove();
+      });
+
+      return container.innerHTML;
+    }
+
+    // ---------- Pretty printer ----------
+    function prettyHtml(html) {
+      var VOID = { area: 1, base: 1, br: 1, col: 1, embed: 1, hr: 1, img: 1, input: 1, link: 1, meta: 1, source: 1, track: 1, wbr: 1 };
+      var BLOCK = { div: 1, p: 1, section: 1, article: 1, header: 1, footer: 1, main: 1, nav: 1, ul: 1, ol: 1, li: 1,
+        table: 1, thead: 1, tbody: 1, tr: 1, td: 1, th: 1, h1: 1, h2: 1, h3: 1, h4: 1, h5: 1, h6: 1,
+        blockquote: 1, figure: 1, figcaption: 1, hr: 1, pre: 1 };
+      var out = '', depth = 0, lastWasBlock = true;
+      var tokens = html.match(/<[^>]+>|[^<]+/g) || [];
+      tokens.forEach(function (tok) {
+        if (tok[0] === '<') {
+          var isClose = tok[1] === '/';
+          var m = tok.match(/^<\/?([a-zA-Z0-9-]+)/);
+          var tag = m ? m[1].toLowerCase() : '';
+          var isVoid = VOID[tag] || /\/>\s*$/.test(tok);
+          var isBlock = BLOCK[tag];
+          if (isClose && isBlock) {
+            depth = Math.max(0, depth - 1);
+            if (lastWasBlock) out += '\n' + '  '.repeat(depth);
+          } else if (isBlock) {
+            out += '\n' + '  '.repeat(depth);
+          }
+          out += tok;
+          if (!isClose && !isVoid && isBlock) depth++;
+          lastWasBlock = isBlock;
+        } else {
+          var text = tok.replace(/[ \t\n]+/g, ' ');
+          if (text.trim()) { out += text; lastWasBlock = false; }
+        }
+      });
+      return out.trim();
+    }
+
+    function fullDocument(fragment) {
+      return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Document</title>\n</head>\n<body>\n' +
+        fragment + '\n</body>\n</html>';
+    }
+
+    var lastRaw = '';
+
+    function convert() {
+      var raw;
+      if (mode === 'paste') {
+        raw = cleanHtml(pasteZone.innerHTML, { stripStyles: stripStyles.checked });
+      } else {
+        raw = markdownToHtml(mdInput.value);
+      }
+      lastRaw = raw;
+      codeText.textContent = prettyHtml(raw);
+      preview.srcdoc = fullDocument(raw);
+    }
+
+    // ---------- Tabs ----------
+    var tabPaste = document.getElementById('tabPaste');
+    var tabMd = document.getElementById('tabMd');
+    var panelPaste = document.getElementById('panelPaste');
+    var panelMd = document.getElementById('panelMd');
+
+    function setMode(m) {
+      mode = m;
+      tabPaste.setAttribute('aria-selected', m === 'paste');
+      tabMd.setAttribute('aria-selected', m === 'md');
+      panelPaste.classList.toggle('active', m === 'paste');
+      panelMd.classList.toggle('active', m === 'md');
+      convert();
+    }
+    tabPaste.addEventListener('click', function () { setMode('paste'); });
+    tabMd.addEventListener('click', function () { setMode('md'); });
+
+    var otabCode = document.getElementById('otabCode');
+    var otabPreview = document.getElementById('otabPreview');
+    function setOutputView(v) {
+      outputView = v;
+      otabCode.setAttribute('aria-selected', v === 'code');
+      otabPreview.setAttribute('aria-selected', v === 'preview');
+      codeBlock.hidden = v !== 'code';
+      preview.hidden = v !== 'preview';
+    }
+    otabCode.addEventListener('click', function () { setOutputView('code'); });
+    otabPreview.addEventListener('click', function () { setOutputView('preview'); });
+
+    // ---------- Paste zone ----------
+    function updateEmptyState() {
+      pasteZone.setAttribute('data-empty', pasteZone.textContent.trim() === '' ? 'true' : 'false');
+    }
+    pasteZone.addEventListener('paste', function () {
+      setTimeout(function () { updateEmptyState(); convert(); }, 0);
+    });
+    pasteZone.addEventListener('input', function () { updateEmptyState(); convert(); });
+    document.getElementById('clearPaste').addEventListener('click', function () {
+      pasteZone.innerHTML = '';
+      updateEmptyState();
+      convert();
+    });
+
+    mdInput.addEventListener('input', convert);
+    stripStyles.addEventListener('change', convert);
+
+    // ---------- File input ----------
+    var fileInput = document.getElementById('fileInput');
+    document.getElementById('fileBtnPaste').addEventListener('click', function () { fileInput.click(); });
+    document.getElementById('fileBtnMd').addEventListener('click', function () { fileInput.click(); });
+    fileInput.addEventListener('change', function () {
+      var file = fileInput.files[0];
+      if (!file) return;
+
+      if (/\.docx$/i.test(file.name)) {
+        flashStatus('Converting ' + file.name + '…');
+        var reader = new FileReader();
+        reader.onload = function () {
+          mammoth.convertToHtml({ arrayBuffer: reader.result })
+            .then(function (result) {
+              setMode('paste');
+              pasteZone.innerHTML = result.value;
+              updateEmptyState();
+              convert();
+              flashStatus(result.messages.length ? 'Converted (some formatting may differ)' : 'Converted');
+            })
+            .catch(function (err) {
+              flashStatus('Could not read that .docx file');
+              console.error(err);
+            });
+        };
+        reader.readAsArrayBuffer(file);
+        fileInput.value = '';
+        return;
+      }
+
+      var textReader = new FileReader();
+      textReader.onload = function () {
+        var text = String(textReader.result);
+        if (/\.(md|markdown|txt)$/i.test(file.name)) {
+          setMode('md');
+          mdInput.value = text;
+        } else {
+          setMode('paste');
+          pasteZone.innerHTML = text;
+        }
+        updateEmptyState();
+        convert();
+      };
+      textReader.readAsText(file);
+      fileInput.value = '';
+    });
+
+    // ---------- Actions ----------
+    function flashStatus(msg) {
+      status.textContent = msg;
+      status.classList.add('show');
+      setTimeout(function () { status.classList.remove('show'); }, 1400);
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      var text = codeText.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { flashStatus('Copied'); });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        flashStatus('Copied');
+      }
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+      var content = fullDoc.checked ? fullDocument(lastRaw) : lastRaw;
+      var blob = new Blob([content], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    updateEmptyState();
+    convert();
+  </script>
+</body>
+</html>

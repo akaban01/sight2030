@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trusted Contacts — sight2030</title>
+<meta name="description" content="A searchable directory of trusted local handymen, contractors and service providers — categorized and click-to-call." />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0b0b12" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b0b12'/%3E%3Cpath d='M18 12a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4Z' fill='%2384cc16'/%3E%3Ccircle cx='32' cy='22' r='3' fill='%230b0b12'/%3E%3Cpath d='M24 46c0-4.4 3.6-8 8-8s8 3.6 8 8' stroke='%230b0b12' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    --bg: #0a0a10;
+    --fg: #f2f2f6;
+    --muted: #9a9aac;
+    --card: #14141f;
+    --card-2: #191924;
+    --border: #232334;
+    --accent: #84cc16;
+    --accent-2: #a3e635;
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7fb;
+      --fg: #14141c;
+      --muted: #5b5b6d;
+      --card: #ffffff;
+      --card-2: #f3f3f9;
+      --border: #e4e4ee;
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+
+  body {
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:
+      radial-gradient(50rem 34rem at 100% -10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%),
+      var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 6vw, 3.5rem) 1.25rem 4rem;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+  }
+  .back:hover { color: var(--fg); }
+  .back svg { width: 14px; height: 14px; }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 8px 30px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .mark svg { width: 22px; height: 22px; stroke: #0b0b12; }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 1.9rem);
+    letter-spacing: -0.02em;
+    margin: 0.1rem 0 0.4rem;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 46ch;
+  }
+
+  .search-wrap { position: relative; margin-bottom: 0.5rem; }
+  .search-wrap svg {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  #search {
+    width: 100%;
+    padding: 0.75rem 0.9rem 0.75rem 2.5rem;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font: inherit;
+    font-size: 0.95rem;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #search::placeholder { color: var(--muted); }
+  #search::-webkit-search-cancel-button { -webkit-appearance: none; }
+  #search:focus {
+    outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    outline-offset: 2px;
+  }
+
+  .meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0.75rem 0 1.75rem;
+  }
+
+  .cat {
+    margin-bottom: 1.75rem;
+  }
+  .cat-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+  }
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .row-main { min-width: 0; }
+  .row-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0 0 0.15rem;
+    overflow-wrap: break-word;
+  }
+  .row-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .row-note.warn { color: #fb7185; }
+
+  .contact-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .contact-link:hover { background: color-mix(in srgb, var(--accent) 26%, transparent); }
+  .contact-link svg { width: 15px; height: 15px; color: var(--accent); flex-shrink: 0; }
+
+  .no-results {
+    display: none;
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1rem;
+    font-size: 0.95rem;
+  }
+  .no-results.show { display: block; }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+  <main>
+    <a class="back" href="https://sight2030.com/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      sight2030
+    </a>
+
+    <header>
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h3.4l2 2.5h7.6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2Z"/></svg>
+      </span>
+      <div>
+        <h1>Trusted Contacts</h1>
+        <p>A directory of local handymen, contractors and service providers, personally referred and organized by category.</p>
+      </div>
+    </header>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="search" placeholder="Search by category, name or note…" aria-label="Search contacts" autocomplete="off" />
+    </div>
+    <p class="meta" id="meta"></p>
+
+    <div id="list"></div>
+    <p class="no-results" id="noResults">No contacts match your search.</p>
+
+    <footer>
+      Part of the <a href="https://sight2030.com/">sight2030</a> workshop.
+    </footer>
+  </main>
+
+  <script>
+    var CONTACTS = [
+      { category: "Appliance Repair", name: "Santana's", contact: "(512) 642-6895" },
+      { category: "Appliance Repair", name: "Alpha & Omega Repair", contact: "(512) 930-3967", notes: "Does not service LG fridges (other LG appliances are okay)" },
+      { category: "Appliance Repair", name: "Breaking Point Appliance Repair", contact: "(512) 955-2118" },
+      { category: "Car Mechanic", name: "Frank", contact: "(512) 987-0842", notes: "Comes to your home" },
+      { category: "Carpet & Grout Cleaner", name: "Mike", contact: "(512) 900-3388" },
+      { category: "Carpet & Grout Cleaner", name: "Arving", contact: "(512) 900-3388", notes: "Steam Heros" },
+      { category: "Christmas/Diwali Lights", name: "Patti", contact: "(512) 203-7108" },
+      { category: "Christmas/Diwali Lights", name: "Mark", contact: "(512) 910-8640" },
+      { category: "Concrete Work", name: "Ray", contact: "(512) 944-2598" },
+      { category: "CPA", name: "Matthews", contact: "(512) 785-6495" },
+      { category: "Custom Alterations", name: "Yojita Modi", contact: "(512) 934-7479" },
+      { category: "Custom Alterations", name: "Lavanya", contact: "(425) 979-8679" },
+      { category: "Deck Contractor", name: "Raquel Lopez", contact: "(512) 760-1486" },
+      { category: "Electrician", name: "Stephen Stanfield", contact: "(940) 642-9316" },
+      { category: "Electrician", name: "Karla", contact: "(402) 630-2615" },
+      { category: "Electrician", name: "Carlos", contact: "(512) 595-6761" },
+      { category: "Electrician", name: "Larry", contact: "(915) 861-0859" },
+      { category: "Electrician", name: "Benjamin", contact: "(512) 587-7016", notes: "Very reasonable price and prompt work" },
+      { category: "Epoxy Stain", name: "Javier", contact: "(512) 709-7412" },
+      { category: "Fence Repair/Painting", name: "Carlos", contact: "(512) 758-3880" },
+      { category: "Fence Repair/Painting", name: "Ben", contact: "(512) 822-6944" },
+      { category: "Fireplace", name: "Josh", contact: "(512) 619-9109", notes: "Fireplace repair" },
+      { category: "Fireplace/Gas Grill", name: "Anon", contact: "(512) 507-0982" },
+      { category: "Fireworks", name: "American Fireworks", notes: "1315 TX-71, Bastrop" },
+      { category: "Food Catering", name: "Lalita", contact: "(512) 995-2136" },
+      { category: "Food Catering", name: "Ananya's Kitchen", contact: "(512) 956-8265" },
+      { category: "Garden Beds/Landscaping", name: "Albert", contact: "(512) 736-8694" },
+      { category: "Garden Beds/Landscaping", name: "Ray", contact: "(512) 944-2598" },
+      { category: "Gutters", name: "Anon", contact: "(281) 541-3245" },
+      { category: "Gutters", name: "Hesus", contact: "(512) 736-4512" },
+      { category: "Gutters", name: "Niki Melendez", contact: "nikimelendez81@gmail.com" },
+      { category: "Handyman", name: "Timothy", contact: "(512) 659-8853" },
+      { category: "Handyman", name: "Wilbur", contact: "(512) 947-3901" },
+      { category: "Handyman", name: "Chris Slagle", contact: "(512) 947-6677" },
+      { category: "Handyman", name: "Massoud", contact: "(737) 400-1419" },
+      { category: "Home Theater", name: "Lamont Scott", contact: "(512) 366-0020" },
+      { category: "HVAC", name: "Beyond Air — Tevin", contact: "(512) 781-6988", notes: "Honest and never tries to rip you off" },
+      { category: "HVAC", name: "Dee's A/C & Heating", contact: "(512) 310-0588" },
+      { category: "HVAC", name: "Air Velocity", contact: "(512) 528-1167" },
+      { category: "HVAC", name: "Brian", contact: "(512) 801-5032" },
+      { category: "HVAC", name: "Chris Miller", contact: "(512) 956-5040", notes: "HVAC repair" },
+      { category: "HVAC", name: "Anon", contact: "(512) 999-6942" },
+      { category: "Insurance Agent", name: "Junyao Hu", contact: "(512) 873-0118", notes: "Allstate" },
+      { category: "Lawn Mowing", name: "Luis", contact: "(512) 383-6025" },
+      { category: "LED Supply (Custom Builds)", name: "Austin LED Supply (Avo)", contact: "(512) 240-4991", notes: "Good pricing to build custom LEDs for under-cabinet lighting" },
+      { category: "Notary", name: "Ashutosh S", contact: "(515) 708-5545" },
+      { category: "Notary", name: "Corey Franklin", contact: "(737) 333-0564" },
+      { category: "Notary", name: "AJ Shirguppe", contact: "(425) 615-3545" },
+      { category: "OCI/Passport/Visa Services", name: "Sanjeev and Leena Kothari", contact: "(512) 909-6887" },
+      { category: "Painting", name: "Jose Luis", contact: "(512) 247-1551" },
+      { category: "Patio / Tile / Stone / Fence", name: "American Fence (Pablo & Melinda)", notes: "Spoiled a tile install and would not come fix it — proceed with caution", warn: true },
+      { category: "Plumber", name: "Adan", contact: "(512) 365-4004" },
+      { category: "Plumber", name: "Kyle (Plumbsy)", contact: "(512) 887-4472", notes: "Honest plumber, not looking to upsell" },
+      { category: "Plumber", name: "Alejandro Sosa", contact: "(512) 949-0662", notes: "Water heater maintenance" },
+      { category: "Poison Center", name: "Poison Center", contact: "(800) 222-1222", notes: "Poisonous bites help line" },
+      { category: "Property Management", name: "Jaiswal Real Estate", contact: "(512) 940-9734" },
+      { category: "Real Estate & Property Management", name: "AJ Shirguppe", contact: "(425) 615-3545", notes: "Buy, sell, lease & property management — Aj.realtor108@gmail.com" },
+      { category: "Roofer", name: "Jorge Marquez", contact: "(512) 705-8174" },
+      { category: "Snake Catcher", name: "Jeremy Brown", contact: "(512) 293-4301" },
+      { category: "Snake Catcher", name: "Anon", contact: "(512) 665-6745" },
+      { category: "Snake Catcher", name: "Critter Control", contact: "(512) 842-4833" },
+      { category: "Sprinkler Repair", name: "Edgar Morales", contact: "(512) 815-9790" },
+      { category: "Stone Work", name: "Francisco", contact: "(512) 662-0078" },
+      { category: "Term & Life Insurance & Will & Trust", name: "Malathi Adike", contact: "(470) 240-9575" },
+      { category: "Term Life Insurance", name: "Verma ji", contact: "(512) 731-4010" },
+      { category: "Tile Grout", name: "Mike", contact: "(512) 900-3388", notes: "$0.35/sq ft for sealing" },
+      { category: "Tiles/Flooring", name: "Elisha", contact: "(512) 269-3663" },
+      { category: "Tiles/Flooring", name: "Ramon Flooring", contact: "(512) 586-5499" },
+      { category: "Tiles/Flooring", name: "Juan Enriquez", contact: "(512) 717-2763", notes: "Tile repair" },
+      { category: "Travel Insurance + Other Insurance", name: "Varsha Grogan", contact: "(800) 847-6426", notes: "Local, Cedar Park" },
+      { category: "Tree Trimming", name: "Areli", contact: "(512) 300-3197" },
+      { category: "Tree Trimming", name: "Brayan", contact: "(512) 696-9715", notes: "Also does stone work" },
+      { category: "Will/Estate Planning", name: "Jessica Brown, Attorney", contact: "(512) 730-0574" }
+    ];
+
+    function isEmail(s) { return /@/.test(s || ''); }
+
+    function telHref(phone) {
+      var digits = phone.replace(/\D/g, '');
+      if (digits.length === 10) return 'tel:+1' + digits;
+      if (digits.length === 11) return 'tel:+' + digits;
+      return 'tel:' + digits;
+    }
+
+    function contactLink(contact) {
+      if (!contact) return '';
+      if (isEmail(contact)) {
+        return '<a class="contact-link" href="mailto:' + contact + '">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
+          contact + '</a>';
+      }
+      return '<a class="contact-link" href="' + telHref(contact) + '">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 4h3.5l1.5 5-2.5 1.5a12 12 0 0 0 6.5 6.5l1.5-2.5 5 1.5v3.5a2 2 0 0 1-2 2A16 16 0 0 1 2.5 6a2 2 0 0 1 2-2Z"/></svg>' +
+        contact + '</a>';
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function groupByCategory(items) {
+      var groups = {};
+      items.forEach(function (item) {
+        (groups[item.category] = groups[item.category] || []).push(item);
+      });
+      return Object.keys(groups).sort(function (a, b) { return a.localeCompare(b); })
+        .map(function (cat) { return { category: cat, items: groups[cat] }; });
+    }
+
+    function render(items) {
+      var list = document.getElementById('list');
+      var noResults = document.getElementById('noResults');
+      var meta = document.getElementById('meta');
+
+      if (!items.length) {
+        list.innerHTML = '';
+        noResults.classList.add('show');
+        meta.textContent = '';
+        return;
+      }
+      noResults.classList.remove('show');
+
+      var groups = groupByCategory(items);
+      var cats = groups.length;
+      meta.textContent = items.length + (items.length === 1 ? ' contact' : ' contacts') +
+        ' across ' + cats + (cats === 1 ? ' category' : ' categories');
+
+      list.innerHTML = groups.map(function (g) {
+        var rows = g.items.map(function (item) {
+          var noteClass = item.warn ? 'row-note warn' : 'row-note';
+          var notesHtml = item.notes ? '<p class="' + noteClass + '">' + escapeHtml(item.notes) + '</p>' : '';
+          return '<div class="row">' +
+            '<div class="row-main"><p class="row-name">' + escapeHtml(item.name) + '</p>' + notesHtml + '</div>' +
+            contactLink(item.contact) +
+            '</div>';
+        }).join('');
+        return '<section class="cat"><p class="cat-title">' + escapeHtml(g.category) + '</p><div class="rows">' + rows + '</div></section>';
+      }).join('');
+    }
+
+    var search = document.getElementById('search');
+    search.addEventListener('input', function () {
+      var q = search.value.trim().toLowerCase();
+      if (!q) { render(CONTACTS); return; }
+      var filtered = CONTACTS.filter(function (item) {
+        var hay = (item.category + ' ' + item.name + ' ' + (item.notes || '')).toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+      render(filtered);
+    });
+
+    render(CONTACTS);
+  </script>
+</body>
+</html>
